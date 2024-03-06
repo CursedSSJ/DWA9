@@ -15,14 +15,8 @@ const populatePage = () => {
     .slice(0, 36)
     .map((book) => ({ ...book, author: authors[book.author] }));
 
-  for (const { author, image, title, id } of extractedbooks) {
-    const bookPreview = new PreviewComponent({
-      author: author,
-      image: image,
-      title: title,
-      id: id,
-    });
-
+  for (const book of extractedbooks) {
+    const bookPreview = new PreviewComponent(book);
     booksfragment.appendChild(bookPreview.render());
   }
 

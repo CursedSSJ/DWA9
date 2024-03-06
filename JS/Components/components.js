@@ -1,49 +1,36 @@
+const template = document.createElement("template");
+template.innerHTML = `
+<div class="preview">
+  <img class="preview__image" src=""/>
+  <div class="preview__info">
+    <h2 class="preview__title"></h2>
+    <p class="preview__author"></p>
+  </div>
+</div>
+`;
+
 export class PreviewComponent {
   constructor({ author, image, title, id }) {
     this.author = author;
     this.image = image;
     this.title = title;
     this.id = id;
+    this.element = this.create();
   }
 
-  createImageElement() {
-    const imageElement = document.createElement("img");
-    imageElement.classList.add("preview__image");
-    imageElement.src = this.image;
-    imageElement.alt = this.title;
-    return imageElement;
-  }
-
-  createTitleElement() {
-    const titleElement = document.createElement("h2");
-    titleElement.classList.add("preview__title");
-    titleElement.textContent = this.title;
-    return titleElement;
-  }
-
-  createAuthorElement() {
-    const authorElement = document.createElement("p");
-    authorElement.classList.add("preview__author");
-    authorElement.textContent = this.author;
-    return authorElement;
-  }
-
-  createInfoContainer() {
-    const previewInfoContainer = document.createElement("div");
-    previewInfoContainer.classList.add("preview__info");
-    previewInfoContainer.appendChild(this.createTitleElement());
-    previewInfoContainer.appendChild(this.createAuthorElement());
-    return previewInfoContainer;
+  create() {
+    const node = template.content.cloneNode(true);
+    node.querySelector(".preview__image").src = this.image;
+    node.querySelector(".preview__image").alt = this.title;
+    node.querySelector(".preview__title").textContent = this.title;
+    node.querySelector(".preview__author").textContent = this.author;
+    const wrapper = document.createElement("div");
+    wrapper.appendChild(node);
+    wrapper.dataset.bookId = this.id;
+    return wrapper;
   }
 
   render() {
-    const previewContainer = document.createElement("div");
-    previewContainer.classList.add("preview");
-    previewContainer.dataset.bookId = this.id;
-
-    previewContainer.appendChild(this.createImageElement());
-    previewContainer.appendChild(this.createInfoContainer());
-
-    return previewContainer;
+    return this.element;
   }
 }
