@@ -1,41 +1,11 @@
 import { BOOKS_PER_PAGE, authors, genres, books } from "./data.js";
 import { dataSelectors } from "./selector.js";
+import { PreviewComponent } from "./Components/components.js";
 
 const matches = books;
 let page = 1;
 
 if (!books && !Array.isArray(books)) throw new Error("Source required");
-
-const createPreview = ({ author, image, title, id }) => {
-  const previewContainer = document.createElement("div");
-  previewContainer.classList.add("preview");
-
-  const previewInfoContainer = document.createElement("div");
-  previewInfoContainer.classList.add("preview__info");
-
-  const imageElement = document.createElement("img");
-  imageElement.classList.add("preview__image");
-  imageElement.src = image;
-  imageElement.alt = title;
-
-  const titleElement = document.createElement("h2");
-  titleElement.classList.add("preview__title");
-  titleElement.textContent = title;
-
-  const authorElement = document.createElement("p");
-  authorElement.classList.add("preview__author");
-  authorElement.textContent = author;
-
-  previewContainer.dataset.bookId = id;
-
-  previewInfoContainer.appendChild(titleElement);
-  previewInfoContainer.appendChild(authorElement);
-
-  previewContainer.appendChild(imageElement);
-  previewContainer.appendChild(previewInfoContainer);
-
-  return previewContainer;
-};
 
 // This part of the function creates a preview of books and adds them to a document fragment
 // which will eventually append them to the DOM.
@@ -46,14 +16,14 @@ const populatePage = () => {
     .map((book) => ({ ...book, author: authors[book.author] }));
 
   for (const { author, image, title, id } of extractedbooks) {
-    const preview = createPreview({
-      author,
-      id,
-      image,
-      title,
+    const bookPreview = new PreviewComponent({
+      author: author,
+      image: image,
+      title: title,
+      id: id,
     });
 
-    booksfragment.appendChild(preview);
+    booksfragment.appendChild(bookPreview.render());
   }
 
   dataSelectors.listItems.appendChild(booksfragment);
@@ -165,8 +135,14 @@ const dataButtonClick = () => {
 
   const fragment = document.createDocumentFragment();
   for (const { author, image, title, id } of extracted) {
-    const preview = createPreview({ author, id, image, title });
-    fragment.appendChild(preview);
+    const preview = new PreviewComponent({
+      author: author,
+      image: image,
+      title: title,
+      id: id,
+    });
+
+    fragment.appendChild(preview.render());
   }
 
   dataSelectors.listItems.appendChild(fragment);
@@ -247,14 +223,14 @@ const searchBooks = (event) => {
     .map((result) => ({ ...result, author: authors[result.author] }));
 
   for (const { author, image, title, id } of dataExtracted) {
-    let dataElement = createPreview({
-      author,
-      id,
-      image,
-      title,
+    let dataElement = new PreviewComponent({
+      author: author,
+      image: image,
+      title: title,
+      id: id,
     });
 
-    datafragment.appendChild(dataElement);
+    datafragment.appendChild(dataElement.render());
   }
 
   dataListItems.appendChild(datafragment);
